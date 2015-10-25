@@ -1,0 +1,21 @@
+{
+  "name": "jenkins-lotr",
+  "version": "0.0.0",
+  "description": "Jenkins builds available on a LOTR map.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GillesRasigade/jenkins-lotr.git"
+  },
+  "keywords": [
+    "jenkins"
+  ],
+  "author": "Gilles Rasigade",
+  "license": "Apache2.0",
+  "bugs": {
+    "url": "https://github.com/GillesRasigade/jenkins-lotr/issues"
+  }
+}
