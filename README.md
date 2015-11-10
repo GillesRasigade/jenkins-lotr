@@ -1,2 +1,4 @@
-# jenkins-lotr
-Jenkins builds available on a LOTR map
+# Jenkins LOTR
+
+Jenkins LOTR is aiming to add some cool stuff to Jenkins Dashboard.
+
