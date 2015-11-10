@@ -11,4 +11,6 @@ npm install
 JENKINS='http://api.jenkins.me' | npm start
 ```
 
-By following these simple tests, you will be able to open your browser at the following address: http://localhost:8080/jenkins.html and see the following funny map.
+By following these simple tests, you will be able to open your browser at the following address: [http://localhost:8080/jenkins.html](http://localhost:8080/jenkins.html) and see the following funny map.
+
+![Jenkins LORT](https://lh3.googleusercontent.com/c9_eAbpTFfy4svtgCkJMxCUd2FL9fmw-md9tp5DwEBs=s0 "Screenshot 2015-11-10 at 23.53.55.png")
