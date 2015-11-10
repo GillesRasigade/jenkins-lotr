@@ -14,3 +14,9 @@ JENKINS='http://api.jenkins.me' | npm start
 By following these simple tests, you will be able to open your browser at the following address: [http://localhost:8080/jenkins.html](http://localhost:8080/jenkins.html) and see the following funny map.
 
 ![Jenkins LORT](https://lh5.googleusercontent.com/8Vl2XbnNgRS-E1a78VrhA3daC_ac5OVzwM7plPjwPzM=w1041-h587-no "Screenshot 2015-11-10 at 23.53.55.png")
+
+## Features
+
+- Load builds from Jenkins API
+- Keep builds state into MongoDB
+- Drag & Drop your builds on locate the most critical ones in the Mordor or the most stable ones in the shire =).
