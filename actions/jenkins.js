@@ -25,85 +25,80 @@ exports.jobs = {
     // Get the fresh list of Jenkins jobs:
     jenkins.job.list(function(err, jobs) {
       if (err) throw err;
-      
-      // Get db object or initialize it
-      // api.mongo.collection
-      //   .find({
-      //     url: new RegExp( '/^'+url+'/' )
-      //   })
-      //   .limit(1)
-      //   .toArray(function(err, results){
           
           // Merge objects and create if necessary
           // 1. identify documents to remove
           // 2. identify documents to insert
           // 3. identify documents to update
           async.forEachOf(jobs,function(item, i,callback){
-            console.log( 41 , item );
             
-            // api.mongo.collection
-            //   .updateOne({
-            //     url: item.url
-            //   }, _.extend({
-            //     $set: {
-            //       updated: new Date()
-            //     },
-            //     $setOnInsert: {
-            //       updated: new Date(),
-            //       created: new Date()
-            //     }
-            //   },{ $set: item }), { upsert: true, safe: true, raw: true }, function(err, result){
-            //     console.log(err,result);
-            //     callback();
-            // });
+            jenkins.job.get(item.name,function(err, job) {
+              
+              job._url = url + job.url.replace(/^http:\/\/[^\/]+/,'');
             
-            api.mongo.collection.findAndModify(
-              {
-                url: item.url
-              },{},_.extend({
-                $set: {
-                  updated: new Date()
-                },
-                $setOnInsert: {
-                  updated: new Date(),
-                  created: new Date()
-                }
-              },{ $set: item }),{new:true,upsert:true},function(err, result){
-                console.log(err,result.value);
-                jobs[i] = result.value;
-                callback();
-              });
-            
-            // api.mongo.collection.find({
-            //   url: item.url
-            // }).toArray(function(err, results){
-            //   console.log(53 , iteresults);
-            //   callback();
-            // })
-            
-            // api.mongo.collection
-            //   .findAndModify({
-            //     query: {
-            //       url: item.url
-            //     },
-            //     update: item,
-            //     new: true,
-            //     upsert: true
-            //   }).toArray(function(err, i){
-            //     console.log( 48 , i );
+              api.mongo.collection.findAndModify(
+                {
+                  url: item.url
+                },{},_.extend({
+                  $set: {
+                    updated: new Date()
+                  },
+                  $setOnInsert: {
+                    updated: new Date(),
+                    created: new Date()
+                  }
+                },{ $set: job }),{new:true,upsert:true},function(err, result){
+                  console.log(err,result.value);
+                  jobs[i] = result.value;
+                  callback();
+                });
                 
-            //     callback();
-            //   });
+            });
           },function(){
-            // console.log(err, results);
             data.response.jobs = jobs;
             
             next(error);
             
           })
-          
-          
-        // });
     });
   }
 };
+
+exports.update = {
+  name:                   'updateJenkinsJob',
+  description:            'Update a jenkins jobs',
+  blockedConnectionTypes: [],
+  outputExample:          {},
+  matchExtensionMimeType: false,
+  version:                1.0,
+  toDocument:             true,
+  middleware:             [],
+
+  inputs: {},
+
+  run: function(api, data, next){
+    var error = null;
+    
+    var _url = data.url;
+    // console.log( 77 , data.connection.rawConnection.params.body );
+    var job = data.connection.rawConnection.params.body;
+    
+    delete job.action;
+    delete job._id;
+    delete job.updated;
+    // console.log( 80 , job );
+    
+    api.mongo.collection.findAndModify(
+      {
+        url: job.url
+      },{},_.extend(job,{
+          updated: new Date()
+        }),{new:true},function(err, result){
+        // console.log(err, result);
+        api.log('Updated job: ' + result.value.url );
+        data.response.job = result.value;
+        next(error);
+      });
+    
+  }
+}

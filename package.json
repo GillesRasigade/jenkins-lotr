@@ -4,6 +4,7 @@
   "description": "Jenkins builds available on a LOTR map.",
   "main": "index.js",
   "scripts": {
+    "start": "node .",
     "test": "mocha test"
   },
   "repository": {
@@ -17,5 +18,11 @@
   "license": "Apache2.0",
   "bugs": {
     "url": "https://github.com/GillesRasigade/jenkins-lotr/issues"
+  },
+  "dependencies": {
+    "actionhero": "^12.1.2",
+    "async": "^1.4.2",
+    "jenkins": "^0.10.1",
+    "mongodb": "^2.0.46"
   }
 }
