@@ -1,6 +1,6 @@
 
 // Read the Jenkins URL:
-var url = process.argv[3];
+var url = process.env.JENKINS || process.argv[3];
 
 // Init Jenkins module:
 var jenkins = require('jenkins')(url);

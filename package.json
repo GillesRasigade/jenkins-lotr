@@ -4,7 +4,7 @@
   "description": "Jenkins builds available on a LOTR map.",
   "main": "index.js",
   "scripts": {
-    "start": "node .",
+    "start": "actionhero start",
     "test": "mocha test"
   },
   "repository": {
