@@ -59,7 +59,7 @@ exports.jobs = {
 
             next(error);
 
-          })
+         });
     });
   }
 };
