@@ -1,7 +1,7 @@
 {
   "name": "jenkins-lotr",
   "version": "0.0.0",
-  "description": "Jenkins builds available on a LOTR map.",
+  "description": "Jenkins builds available on a LOTR map!",
   "main": "index.js",
   "scripts": {
     "start": "actionhero start",
