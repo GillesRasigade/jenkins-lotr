@@ -59,7 +59,7 @@ exports.jobs = {
 
             next(error);
 
-         });
+          });
     });
   }
 };
@@ -101,4 +101,4 @@ exports.update = {
       });
 
   }
-}
+};
