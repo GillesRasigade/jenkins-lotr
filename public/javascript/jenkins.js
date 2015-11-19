@@ -37,15 +37,17 @@
       _this.config = data.config;
       _this._$jobs.css('background-image', 'url(' + _this.config.backgroundImage + ')');
       var image = new Image();
-      image.src = _this.config.backgroundImage;
-      _this.imageRatio = image.height / image.width;
-    
-      _this.drag();
-      _this.reload();
-      var frequency = _this.config.reloadFrequency || 60000;
-      _this._interval = setInterval(function(){
+      image.onload = function(){  
+        _this.imageRatio = image.height / image.width;
+      
+        _this.drag();
         _this.reload();
-      },frequency);
+        var frequency = _this.config.reloadFrequency || 60000;
+        _this._interval = setInterval(function(){
+          _this.reload();
+        },frequency);
+      }
+      image.src = _this.config.backgroundImage;
     });
   }
   
