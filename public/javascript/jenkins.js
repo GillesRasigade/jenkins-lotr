@@ -18,19 +18,11 @@
   
   Jenkins.prototype.drag = function drag() {
     var _this = this, start = {};
-    // setTimeout(function(){
     document.addEventListener('dragstart',function(event){
-      // console.log(22 , 'ondrop' , event.pageX , event.target.style.left );
-      // var target = event.target;
-      // target.style.left = event.pageX;
       start = { x: event.pageX, y: event.pageY };
       if ( _this._interval ) clearInterval( _this._interval );
     });
     document.addEventListener('dragend',function(event){
-      // console.log(22 , 'ondrop' , event.pageX , event.target.style.left );
-      // var target = event.target;
-      // target.style.left = event.pageX;
-      console.log( 22 , start , event.pageX , event.pageY );
       event.target.style.left = parseInt(event.target.style.left,10) + ( event.pageX - start.x );
       event.target.style.top = parseInt(event.target.style.top,10) + ( event.pageY - start.y );
     });
@@ -39,30 +31,30 @@
   Jenkins.prototype.init = function init( callback ) {
     var _this = this;
     this._$jobs = $('body');
-   // this._$jobs.css('background-image', 'url(../images/middle-earth-map.jpg)');
     
     this.client.action('getJenkinsConfig', function(data){
-      console.log( 'getJenkinsConfig: ' , data );
+      // console.log( 'getJenkinsConfig: ' , data );
       _this.config = data.config;
       _this._$jobs.css('background-image', 'url(' + _this.config.backgroundImage + ')');
-    
-    // this._$jobs.height( window.innerWidth / 3000 * 1713 )
+      var image = new Image();
+      image.src = _this.config.backgroundImage;
+      _this.imageRatio = image.height / image.width;
     
       _this.drag();
       _this.reload();
+      var frequency = _this.config.reloadFrequency || 60000;
       _this._interval = setInterval(function(){
         _this.reload();
-      },60000);
+      },frequency);
     });
   }
   
   Jenkins.prototype.reload = function reload( callback ) {
     
-    // Remove all possible created elements:
-    
     var _this = this;
     this.jobs(function(jobs){
       
+      // Remove all possible created elements:
       $('.jenkins-job-container').remove();
       
       jobs.forEach(function(job,i){
@@ -73,36 +65,24 @@
         var y = undefined != job.y ? job.y : Math.random();
         var r = undefined != job.r ? job.r : 32;
         
-        x *= window.innerWidth;
-        // y *= window.innerHeight;
-        // x *= _this._$jobs.width();
-        // x *= 3000 / window.innerWidth;
-        // y *= _this._$jobs.height();
-        
-        y *= ( 1713 / 3000 * window.innerWidth );
-        
-//        if ( 'blue' === job.color ) {
-//          job.color = '#33ee33';
-//        }
-        
+        x *= window.innerWidth;        
+        y *= ( _this.imageRatio * window.innerWidth );        
         r += 32 * ( 100 - job.healthReport[0].score ) / 100
         
         $div
           .css('width', r)
           .css('height', r)
-	  .addClass('halo-' + job.color);
-        
-	var mappingKey = job.healthReport[0].iconUrl; 
-	if( undefined !== _this.config.imagesMapping[mappingKey] ) {
-	  var url = undefined !== _this.config.imagesMapping[mappingKey][job.name] ? _this.config.imagesMapping[mappingKey][job.name] : _this.config.imagesMapping[mappingKey].default;
-	  $div.css('background-image', 'url(' + url + ')');
-	} else {
-          $div.css('background-image', 'url(https://cdn.rawgit.com/jenkinsci/jenkins/jenkins-1.638/war/src/main/webapp/images/48x48/'+mappingKey+')')
-
-	}
-        // div.style['border-color'] = ( job.color ? job.color : 'red' );
-        // div.title = job.name;
-        // div.draggable = true;
+      	  .addClass('halo-' + job.color);
+              
+      	var mappingKey = job.healthReport[0].iconUrl;
+        var map = _this.config.imagesMapping[mappingKey];
+      	if( undefined !== map ) {
+      	  var url = undefined !== map[job.name] ?map[job.name] : map.default;
+      	  $div.css('background-image', 'url(' + url + ')');
+      	} else {
+          var url = 'https://cdn.rawgit.com/jenkinsci/jenkins/jenkins-1.638/war/src/main/webapp/images/48x48/'+mappingKey;
+        }
+        $div.css('background-image', 'url(' + url + ')')
         
         var $span = $('<a href="'+job._url+'" target="_blank">' + job.name + '</a>');
         $span
@@ -111,15 +91,14 @@
         
         $div.append($span);
 
-	var $otherDiv = $('<div id="job-'+job.name+'-container" class="jenkins-job-container" draggable="true">')
-	  .css('box-shadow','0px 0px '+((100-job.healthReport[0].score)*1)+'px '+((100-job.healthReport[0].score)/2)+'px rgba(0,0,0,0.75)')
-	  .css('left', (x) + 'px')
+      	var $container = $('<div id="job-'+job.name+'-container" class="jenkins-job-container" draggable="true">')
+      	  .css('box-shadow','0px 0px '+((100-job.healthReport[0].score)*1)+'px '+((100-job.healthReport[0].score)/2)+'px rgba(0,0,0,0.75)')
+      	  .css('left', (x) + 'px')
           .css('top', (y) + 'px')
           .css('width', r)
           .css('height', r);
-        $otherDiv.append($div);
         // Appending:
-        _this._$jobs.append( $otherDiv );
+        _this._$jobs.append( $container.append($div) );
       })
     })
   }
@@ -132,12 +111,10 @@
         
         var $div = $('#job-'+job.name+'-container');
         job.x = parseFloat( $div.css('left') ) / window.innerWidth;
-        // job.y = parseFloat( $div.css('top')) / window.innerHeight;
-        job.y = parseFloat( $div.css('top')) / ( 1713 / 3000 * window.innerWidth );
+        job.y = parseFloat( $div.css('top')) / ( _this.imageRatio * window.innerWidth );
         
         _this.client.action('updateJenkinsJob', job, function(data){
-          // console.log( 'updateJenkinsJob: ' , job , data );
-          // callback( data.jobs );
+
         });
       });
     });
