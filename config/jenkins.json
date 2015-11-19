@@ -1,0 +1,22 @@
+{
+    "imagesMapping":{
+          "health-00to19.png": {
+                "default": "https://cdn.rawgit.com/jenkinsci/jenkins/jenkins-1.638/war/src/main/webapp/images/48x48/health-00to19.png",
+                "my_project": "The Sauron Eye image"
+          },
+          "health-20to39.png": {
+                "default": "https://cdn.rawgit.com/jenkinsci/jenkins/jenkins-1.638/war/src/main/webapp/images/48x48/health-20to39.png"
+          },
+          "health-40to59.png": {
+                "default": "https://cdn.rawgit.com/jenkinsci/jenkins/jenkins-1.638/war/src/main/webapp/images/48x48/health-40to59.png"
+          },
+          "health-60to79.png": {
+                "default": "https://cdn.rawgit.com/jenkinsci/jenkins/jenkins-1.638/war/src/main/webapp/images/48x48/health-60to79.png"
+          },
+          "health-80plus.png": {
+                "default": "https://cdn.rawgit.com/jenkinsci/jenkins/jenkins-1.638/war/src/main/webapp/images/48x48/health-80plus.png",
+                "my_project": "The Ring has been destroyed!"
+	       }
+   },
+   "backgroundImage" : "/images/middle-earth-map.jpg"
+}

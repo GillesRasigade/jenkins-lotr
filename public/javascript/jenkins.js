@@ -10,7 +10,7 @@
    */
   Jenkins.prototype.jobs = function jobs( callback ) {
     this.client.action('getJenkinsJobs', function(data){
-      console.log( 'getJenkinsJobs: ' , data );
+      //console.log( 'getJenkinsJobs: ' , data );
       callback( data.jobs );
     });
     return this;
@@ -39,14 +39,21 @@
   Jenkins.prototype.init = function init( callback ) {
     var _this = this;
     this._$jobs = $('body');
+   // this._$jobs.css('background-image', 'url(../images/middle-earth-map.jpg)');
+    
+    this.client.action('getJenkinsConfig', function(data){
+      console.log( 'getJenkinsConfig: ' , data );
+      _this.config = data.config;
+      _this._$jobs.css('background-image', 'url(' + _this.config.backgroundImage + ')');
     
     // this._$jobs.height( window.innerWidth / 3000 * 1713 )
     
-    this.drag();
-    this.reload();
-    this._interval = setInterval(function(){
+      _this.drag();
       _this.reload();
-    },60000);
+      _this._interval = setInterval(function(){
+        _this.reload();
+      },60000);
+    });
   }
   
   Jenkins.prototype.reload = function reload( callback ) {
@@ -56,7 +63,7 @@
     var _this = this;
     this.jobs(function(jobs){
       
-      $('.jenkins-job').remove();
+      $('.jenkins-job-container').remove();
       
       jobs.forEach(function(job,i){
         
@@ -74,25 +81,25 @@
         
         y *= ( 1713 / 3000 * window.innerWidth );
         
-        if ( 'blue' === job.color ) {
-          job.color = '#33ee33';
-        }
+//        if ( 'blue' === job.color ) {
+//          job.color = '#33ee33';
+//        }
         
         r += 32 * ( 100 - job.healthReport[0].score ) / 100
         
-        // Positioning:
         $div
-          .css('left', (x) + 'px')
-          .css('top', (y) + 'px')
           .css('width', r)
           .css('height', r)
-          .css('background-color',( job.color ? job.color : '#777777' ))
-          .css('background-image', 'url(http://jenkins.integration.fastbooking.ch:8080/static/9387e730/images/32x32/'+job.healthReport[0].iconUrl+')')
-          
-          .css('box-shadow','0px 0px '+((100-job.healthReport[0].score)*1)+'px '+((100-job.healthReport[0].score)/2)+'px rgba(0,0,0,0.75)')
-          
-          .attr('draggable',true)
-          
+	  .addClass('halo-' + job.color);
+        
+	var mappingKey = job.healthReport[0].iconUrl; 
+	if( undefined !== _this.config.imagesMapping[mappingKey] ) {
+	  var url = undefined !== _this.config.imagesMapping[mappingKey][job.name] ? _this.config.imagesMapping[mappingKey][job.name] : _this.config.imagesMapping[mappingKey].default;
+	  $div.css('background-image', 'url(' + url + ')');
+	} else {
+          $div.css('background-image', 'url(https://cdn.rawgit.com/jenkinsci/jenkins/jenkins-1.638/war/src/main/webapp/images/48x48/'+mappingKey+')')
+
+	}
         // div.style['border-color'] = ( job.color ? job.color : 'red' );
         // div.title = job.name;
         // div.draggable = true;
@@ -103,9 +110,16 @@
           .css('top', Math.max(0,r-30)/2)
         
         $div.append($span);
-        
+
+	var $otherDiv = $('<div id="job-'+job.name+'-container" class="jenkins-job-container" draggable="true">')
+	  .css('box-shadow','0px 0px '+((100-job.healthReport[0].score)*1)+'px '+((100-job.healthReport[0].score)/2)+'px rgba(0,0,0,0.75)')
+	  .css('left', (x) + 'px')
+          .css('top', (y) + 'px')
+          .css('width', r)
+          .css('height', r);
+        $otherDiv.append($div);
         // Appending:
-        _this._$jobs.append( $div );
+        _this._$jobs.append( $otherDiv );
       })
     })
   }
@@ -116,13 +130,13 @@
     this.jobs(function(jobs){
       jobs.forEach(function(job,i){
         
-        var $div = $('#job-'+job.name);
+        var $div = $('#job-'+job.name+'-container');
         job.x = parseFloat( $div.css('left') ) / window.innerWidth;
         // job.y = parseFloat( $div.css('top')) / window.innerHeight;
         job.y = parseFloat( $div.css('top')) / ( 1713 / 3000 * window.innerWidth );
         
         _this.client.action('updateJenkinsJob', job, function(data){
-          console.log( 'updateJenkinsJob: ' , job , data );
+          // console.log( 'updateJenkinsJob: ' , job , data );
           // callback( data.jobs );
         });
       });

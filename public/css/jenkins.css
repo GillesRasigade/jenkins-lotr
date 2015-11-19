@@ -1,5 +1,4 @@
 body {
-  background-image: url('../images/middle-earth-map.jpg');
   background-position: top left;
   background-size: 100% auto;
   background-repeat: no-repeat;
@@ -7,20 +6,24 @@ body {
   height: 100%;
 }
 
-.jenkins-job {
-  width: 16px; height: 16px;
-  border-radius: 100%;
-  background: red;
+.jenkins-job-container{
   position: absolute;
+  border-radius: 100%;
+}
+
+.jenkins-job {
+  /*width: 16px; height: 16px;*/
+  border-radius: 100%;
+  background: #C2B48D;
   border: 1px solid white;
   
-  backgorund-position: center center;
+  background-position: center center;
   background-size: cover;
   
   /*box-shadow: 0px 0px 0px #000000;*/
 }
 
-.jenkins-job:hover {
+.jenkins-job-container:hover {
   z-index: 999;
 }
 
@@ -53,4 +56,20 @@ body {
 .jenkins-job:hover a {
   display: block;
   /*opacity: 1;*/
+}
+
+.halo-red{
+    border-color: red;
+    border-radius: 100%;
+    box-shadow: 0 0 30px red;
+}
+.halo-blue{
+    border-color: #33ee33;
+    border-radius: 100%;
+    box-shadow: 0 0 30px #33ee33;
+}
+.halo-yellow{
+    border-color: yellow;
+    border-radius: 100%;
+    box-shadow: 0 0 30px yellow;
 }

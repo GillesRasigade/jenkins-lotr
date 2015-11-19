@@ -56,7 +56,6 @@ exports.jobs = {
             });
           },function(){
             data.response.jobs = jobs;
-
             next(error);
 
           });
@@ -102,3 +101,28 @@ exports.update = {
 
   }
 };
+
+exports.config = {
+  name:                   'getJenkinsConfig',
+  description:            'Retrieve the Jenkins config',
+  blockedConnectionTypes: [],
+  outputExample:          {},
+  matchExtensionMimeType: false,
+  version:                1.0,
+  toDocument:             true,
+  middleware:             [],
+
+  inputs: {},
+
+  run: function(api, data, next){
+    var error = null;
+
+    if( undefined === api.config.jenkins ) {
+    	error = new Error('config not loaded')
+    } else {
+    	data.response.config = api.config.jenkins;
+    }
+    next(error);
+  }
+};
+

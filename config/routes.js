@@ -28,7 +28,8 @@ exports.default = {
       ---------------------- */
       
       get: [
-        { path: '/jenkins/jobs', action: 'getJenkinsJobs' }, // (GET) /api/jenkins/jobs
+        { path: '/jenkins/jobs', action: 'getJenkinsJobs' }, // (GET) /api/jenkins/jobs,
+	{ path: '/jenkins/config', action: 'getJenkinsConfig' }, // (GET) /api/jenkins/config,
       ],
       
       post: [
