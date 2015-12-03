@@ -74,7 +74,11 @@
         $div
           .css('width', r)
           .css('height', r)
-      	  .addClass('halo-' + job.color);
+      	  .addClass('halo-' + job.color.replace('_anime', ''));
+
+        if(job.color.indexOf('_anime') !== -1) {
+          $div.addClass('anime');
+        }
               
       	var mappingKey = job.healthReport[0].iconUrl;
         var map = _this.config.imagesMapping[mappingKey];
