@@ -19,12 +19,20 @@
   Jenkins.prototype.drag = function drag() {
     var _this = this, start = {};
     document.addEventListener('dragstart',function(event){
-      start = { x: event.pageX, y: event.pageY };
+      start = { x: event.screenX, y: event.screenY };
       if ( _this._interval ) clearInterval( _this._interval );
     });
     document.addEventListener('dragend',function(event){
-      event.target.style.left = parseInt(event.target.style.left,10) + ( event.pageX - start.x );
-      event.target.style.top = parseInt(event.target.style.top,10) + ( event.pageY - start.y );
+      var target = $(event.target);
+      if(!target.hasClass('jenkins-job-container')) {
+        if( target.parent().hasClass('jenkins-job-container')) {
+          var target = target.parent()
+        } else {
+          var target = target.parent().parent()
+        }
+      }
+      target.css('margin-left', parseInt(target.css('margin-left').replace('px',''),10) + ( event.screenX - start.x ));
+      target.css('margin-top', parseInt(target.css('margin-top').replace('px',''),10) + ( event.screenY - start.y ));
     });
   }
   
@@ -75,10 +83,6 @@
           .css('width', r)
           .css('height', r)
       	  .addClass('halo-' + job.color.replace('_anime', ''));
-
-        if(job.color.indexOf('_anime') !== -1) {
-          $div.addClass('anime');
-        }
               
       	var mappingKey = job.healthReport[0].iconUrl;
         var map = _this.config.imagesMapping[mappingKey];
@@ -99,10 +103,13 @@
 
       	var $container = $('<div id="job-'+job.name+'-container" class="jenkins-job-container" draggable="true">')
       	  .css('box-shadow','0px 0px '+((100-job.healthReport[0].score)*1)+'px '+((100-job.healthReport[0].score)/2)+'px rgba(0,0,0,0.75)')
-      	  .css('left', (x) + 'px')
-          .css('top', (y) + 'px')
+      	  .css('margin-left', (x) + 'px')
+          .css('margin-top', (y) + 'px')
           .css('width', r)
           .css('height', r);
+          if(job.color.indexOf('_anime') !== -1) {
+            $container.addClass('anime');
+          }
         // Appending:
         _this._$jobs.append( $container.append($div) );
       })
@@ -116,8 +123,8 @@
       jobs.forEach(function(job,i){
         
         var $div = $('#job-'+job.name+'-container');
-        job.x = parseFloat( $div.css('left') ) / window.innerWidth;
-        job.y = parseFloat( $div.css('top')) / ( _this.imageRatio * window.innerWidth );
+        job.x = parseFloat( $div.css('margin-left') ) / window.innerWidth;
+        job.y = parseFloat( $div.css('margin-top')) / ( _this.imageRatio * window.innerWidth );
         
         _this.client.action('updateJenkinsJob', job, function(data){
 
